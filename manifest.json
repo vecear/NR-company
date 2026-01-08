@@ -1,0 +1,62 @@
+{
+    "manifest_version": 3,
+    "name": "NR Preloader",
+    "version": "1.2.0",
+    "description": "Preloads all CT series/views while viewing on Navigating Radiology",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "storage"
+    ],
+    "host_permissions": [
+        "https://app.navigatingradiology.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "48": "icon48.png",
+            "128": "icon128.png"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://app.navigatingradiology.com/course-types/*/courses/*/cases/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "run_at": "document_idle",
+            "world": "MAIN"
+        },
+        {
+            "matches": [
+                "https://app.navigatingradiology.com/*"
+            ],
+            "js": [
+                "theme-detector.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "icons": {
+        "48": "icon48.png",
+        "128": "icon128.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icon48_light.png",
+                "icon48_dark.png",
+                "icon128_light.png",
+                "icon128_dark.png"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 240px;
+      padding: 12px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #333;
+    }
+
+    .header img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .header h1 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #444;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked+.toggle-slider {
+      background-color: #00ff88;
+    }
+
+    input:checked+.toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #00ff88, #00ccff);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:disabled {
+      background: #444;
+      color: #888;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      text-align: center;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: rgba(0, 255, 136, 0.2);
+      color: #00ff88;
+    }
+
+    .status.error {
+      display: block;
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff6b6b;
+    }
+
+    .status.info {
+      display: block;
+      background: rgba(0, 200, 255, 0.2);
+      color: #00ccff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <img src="icon48.png" alt="icon">
+    <h1>NR Preloader</h1>
+  </div>
+
+  <div class="toggle-row">
+    <span class="toggle-label">啟用預載</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="enableToggle" checked>
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <div class="toggle-row">
+    <span class="toggle-label">右鍵調整亮度</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="wlToggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <div class="toggle-row">
+    <span class="toggle-label">左鍵平移影像</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="panToggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <div class="toggle-row">
+    <span class="toggle-label">滾輪按住縮放</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="zoomToggle">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+
+  <button class="btn btn-primary" id="exportBtn">
+    📥 匯出已載入影像
+  </button>
+
+  <div class="status" id="status"></div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
