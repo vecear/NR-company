@@ -69,7 +69,7 @@
 
     function saveOriginalTool() {
         // Don't save if we are already in a temporary tool state
-        if (isDraggingWL || isPanDragging || isZoomDragging) return;
+        if (isDraggingWL || isPanDragging) return;
 
         // If we don't have a saved tool, find the current active one
         if (originalToolId === null) {
@@ -77,8 +77,7 @@
             // Ignore if the active tool is one of our temporary tools (just in case)
             if (activeBtn &&
                 activeBtn.id !== 'wwwc-tool' &&
-                activeBtn.id !== 'pan-tool' &&
-                activeBtn.id !== 'zoom-tool') {
+                activeBtn.id !== 'pan-tool') {
                 originalToolId = activeBtn.id;
                 console.log('[NR Preloader] Saved original tool:', originalToolId);
             }
@@ -86,14 +85,14 @@
     }
 
     function restoreOriginalTool() {
-        // Only restore if neither WL nor Pan nor Zoom is still active
-        if (!isDraggingWL && !isPanDragging && !isZoomDragging && originalToolId) {
+        // Only restore if neither WL nor Pan is still active
+        if (!isDraggingWL && !isPanDragging && originalToolId) {
             const toolToRestore = originalToolId;
             originalToolId = null; // Clear first to prevent re-entry
 
             setTimeout(() => {
                 // Double check dragging state hasn't changed
-                if (!isDraggingWL && !isPanDragging && !isZoomDragging) {
+                if (!isDraggingWL && !isPanDragging) {
                     const prevBtn = document.getElementById(toolToRestore);
                     if (prevBtn) {
                         console.log('[NR Preloader] Restoring tool via simulation:', toolToRestore);
@@ -383,7 +382,7 @@
       position: fixed;
       bottom: 10px;
       left: 10px;
-      background: rgba(0, 0, 0, 0.9);
+      background: rgba(0, 0, 0, 0.5);
       color: #00ff88;
       padding: 8px 10px;
       border-radius: 6px;
@@ -398,7 +397,7 @@
     `;
         container.innerHTML = `
       <div id="preloader-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <span id="preloader-title" style="font-weight: bold; font-size: 10px;">🔄 NR Preloader</span>
+        <span id="preloader-title" style="font-weight: bold; font-size: 14px;">NR Preloader</span>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <button id="preloader-toggle" style="
             background: none;
@@ -472,6 +471,14 @@
             seriesEl.textContent = completed ? '✅ All series preloaded!' : `📁 ${seriesName}`;
             if (completed) {
                 seriesEl.style.color = '#00ff88';
+
+                // Auto minimize after 2 seconds
+                setTimeout(() => {
+                    const toggleBtn = document.getElementById('preloader-toggle');
+                    if (toggleBtn && !isMinimized) {
+                        toggleBtn.click();
+                    }
+                }, 2000);
             }
         }
         if (progressEl) {

@@ -4,6 +4,373 @@ document.addEventListener('DOMContentLoaded', async () => {
     const enableToggle = document.getElementById('enableToggle');
     const exportBtn = document.getElementById('exportBtn');
     const statusEl = document.getElementById('status');
+    const langSelect = document.getElementById('langSelect');
+
+    const TRANSLATIONS = {
+        zh: {
+            enablePreload: "啟用預載",
+            masterToggle: "同時調整左右鍵",
+            wlToggle: "右鍵調整亮度",
+            panToggle: "左鍵平移影像",
+            exportBtn: "📥 匯出已載入影像",
+            msgs: {
+                preloadEnabled: "預載已啟用 (重新整理頁面生效)",
+                preloadDisabled: "預載已停用",
+                wlEnabled: "右鍵調整亮度已啟用",
+                wlDisabled: "右鍵調整亮度已停用",
+                panEnabled: "左鍵平移已啟用",
+                panDisabled: "左鍵平移已停用",
+                exporting: "正在匯出影像...",
+                exportBtnWait: "⏳ 匯出中...",
+                exportBtnPick: "⏳ 選擇資料夾...",
+                errorCornerstone: "找不到 Cornerstone",
+                errorStudy: "找不到 Study 資料",
+                errorCache: "找不到 Cornerstone 快取",
+                errorPage: "請在 Navigating Radiology 頁面使用此功能",
+                errorNoData: "無法取得影像資料",
+                errorExport: "匯出失敗",
+                errorGeneric: "匯出時發生錯誤: ",
+                cancel: "已取消選擇",
+                success: "已匯出 {n} 張影像 ({s} 個資料夾)"
+            }
+        },
+        en: {
+            enablePreload: "Enable Preload",
+            masterToggle: "Control Both (L/R Click)",
+            wlToggle: "Right-click Window/Level",
+            panToggle: "Left-click Pan",
+            exportBtn: "📥 Export Loaded Images",
+            msgs: {
+                preloadEnabled: "Preload Enabled (Refresh to apply)",
+                preloadDisabled: "Preload Disabled",
+                wlEnabled: "Right-click W/L Enabled",
+                wlDisabled: "Right-click W/L Disabled",
+                panEnabled: "Left-click Pan Enabled",
+                panDisabled: "Left-click Pan Disabled",
+                exporting: "Exporting images...",
+                exportBtnWait: "⏳ Exporting...",
+                exportBtnPick: "⏳ Select Folder...",
+                errorCornerstone: "Cornerstone not found",
+                errorStudy: "Study data not found",
+                errorCache: "Cornerstone cache not found",
+                errorPage: "Please use on Navigating Radiology page",
+                errorNoData: "Could not retrieve image data",
+                errorExport: "Export failed",
+                errorGeneric: "Error during export: ",
+                cancel: "Selection cancelled",
+                success: "Exported {n} images ({s} folders)"
+            }
+        },
+        ja: {
+            enablePreload: "プリロードを有効化",
+            masterToggle: "左右クリック同時制御",
+            wlToggle: "右クリック 輝度調整",
+            panToggle: "左クリック 画像移動",
+            exportBtn: "📥 画像をエクスポート",
+            msgs: {
+                preloadEnabled: "プリロード有効 (更新して適用)",
+                preloadDisabled: "プリロード無効",
+                wlEnabled: "右クリック輝度調整 有効",
+                wlDisabled: "右クリック輝度調整 無効",
+                panEnabled: "左クリック移動 有効",
+                panDisabled: "左クリック移動 無効",
+                exporting: "エクスポート中...",
+                exportBtnWait: "⏳ エクスポート中...",
+                exportBtnPick: "⏳ フォルダ選択...",
+                errorCornerstone: "Cornerstoneが見つかりません",
+                errorStudy: "Studyデータが見つかりません",
+                errorCache: "キャッシュが見つかりません",
+                errorPage: "Navigating Radiologyページで使用してください",
+                errorNoData: "画像データを取得できませんでした",
+                errorExport: "エクスポート失敗",
+                errorGeneric: "エラー発生: ",
+                cancel: "キャンセルされました",
+                success: "{n}枚の画像 ({s}フォルダ) をエクスポートしました"
+            }
+        },
+        ko: {
+            enablePreload: "미리로드 활성화",
+            masterToggle: "좌우 클릭 동시 제어",
+            wlToggle: "우클릭 밝기 조절",
+            panToggle: "좌클릭 이미지 이동",
+            exportBtn: "📥 이미지 내보내기",
+            msgs: {
+                preloadEnabled: "미리로드 활성화 (새로고침 필요)",
+                preloadDisabled: "미리로드 비활성화",
+                wlEnabled: "우클릭 밝기 조절 활성화",
+                wlDisabled: "우클릭 밝기 조절 비활성화",
+                panEnabled: "좌클릭 이동 활성화",
+                panDisabled: "좌클릭 이동 비활성화",
+                exporting: "내보내는 중...",
+                exportBtnWait: "⏳ 내보내는 중...",
+                exportBtnPick: "⏳ 폴더 선택...",
+                errorCornerstone: "Cornerstone을 찾을 수 없습니다",
+                errorStudy: "Study 데이터를 찾을 수 없습니다",
+                errorCache: "캐시를 찾을 수 없습니다",
+                errorPage: "Navigating Radiology 페이지에서 사용해주세요",
+                errorNoData: "이미지 데이터를 가져올 수 없습니다",
+                errorExport: "내보내기 실패",
+                errorGeneric: "오류 발생: ",
+                cancel: "취소됨",
+                success: "{n}장 ({s} 폴더) 내보내기 완료"
+            }
+        },
+        es: {
+            enablePreload: "Habilitar Precarga",
+            masterToggle: "Control Ambos Clics",
+            wlToggle: "Clic Derecho Brillo/Contraste",
+            panToggle: "Clic Izquierdo Desplazar",
+            exportBtn: "📥 Exportar Imágenes",
+            msgs: {
+                preloadEnabled: "Precarga Activada (Recargar p/ aplicar)",
+                preloadDisabled: "Precarga Desactivada",
+                wlEnabled: "Clic Derecho W/L Activado",
+                wlDisabled: "Clic Derecho W/L Desactivado",
+                panEnabled: "Clic Izquierdo Pan Activado",
+                panDisabled: "Clic Izquierdo Pan Desactivado",
+                exporting: "Exportando imágenes...",
+                exportBtnWait: "⏳ Exportando...",
+                exportBtnPick: "⏳ Seleccionar Carpeta...",
+                errorCornerstone: "No se encontró Cornerstone",
+                errorStudy: "No se encontraron datos del estudio",
+                errorCache: "No se encontró caché",
+                errorPage: "Usar en página de Navigating Radiology",
+                errorNoData: "No se pudieron obtener datos de imagen",
+                errorExport: "Falló la exportación",
+                errorGeneric: "Error al exportar: ",
+                cancel: "Cancelado",
+                success: "{n} imágenes exportadas ({s} carpetas)"
+            }
+        },
+        de: {
+            enablePreload: "Vorladen aktivieren",
+            masterToggle: "Beide Klicks steuern",
+            wlToggle: "Rechtsklick Helligkeit",
+            panToggle: "Linksklick Verschieben",
+            exportBtn: "📥 Bilder exportieren",
+            msgs: {
+                preloadEnabled: "Vorladen aktiviert (Seite neu laden)",
+                preloadDisabled: "Vorladen deaktiviert",
+                wlEnabled: "Rechtsklick Helligkeit Ein",
+                wlDisabled: "Rechtsklick Helligkeit Aus",
+                panEnabled: "Linksklick Verschieben Ein",
+                panDisabled: "Linksklick Verschieben Aus",
+                exporting: "Bilder werden exportiert...",
+                exportBtnWait: "⏳ Exportieren...",
+                exportBtnPick: "⏳ Ordner wählen...",
+                errorCornerstone: "Cornerstone nicht gefunden",
+                errorStudy: "Studiendaten nicht gefunden",
+                errorCache: "Cache nicht gefunden",
+                errorPage: "Bitte auf Navigating Radiology Seite nutzen",
+                errorNoData: "Bilddaten konnten nicht abgerufen werden",
+                errorExport: "Export fehlgeschlagen",
+                errorGeneric: "Fehler beim Export: ",
+                cancel: "Abgebrochen",
+                success: "{n} Bilder exportiert ({s} Ordner)"
+            }
+        },
+        "zh-CN": {
+            enablePreload: "启用预载",
+            masterToggle: "同时调整左右键",
+            wlToggle: "右键调整亮度",
+            panToggle: "左键平移影像",
+            exportBtn: "📥 导出已载入影像",
+            msgs: {
+                preloadEnabled: "预载已启用 (刷新页面生效)",
+                preloadDisabled: "预载已停用",
+                wlEnabled: "右键调整亮度已启用",
+                wlDisabled: "右键调整亮度已停用",
+                panEnabled: "左键平移已启用",
+                panDisabled: "左键平移已停用",
+                exporting: "正在导出影像...",
+                exportBtnWait: "⏳ 导出中...",
+                exportBtnPick: "⏳ 选择文件夹...",
+                errorCornerstone: "找不到 Cornerstone",
+                errorStudy: "找不到 Study 数据",
+                errorCache: "找不到 Cornerstone 缓存",
+                errorPage: "请在 Navigating Radiology 页面使用此功能",
+                errorNoData: "无法获取影像数据",
+                errorExport: "导出失败",
+                errorGeneric: "导出时发生错误: ",
+                cancel: "已取消选择",
+                success: "已导出 {n} 张影像 ({s} 个文件夹)"
+            }
+        },
+        pt: {
+            enablePreload: "Ativar Pré-carregamento",
+            masterToggle: "Controlar Ambos (Esq/Dir)",
+            wlToggle: "Botão Direito Brilho",
+            panToggle: "Botão Esquerdo Panorâmica",
+            exportBtn: "📥 Exportar Imagens",
+            msgs: {
+                preloadEnabled: "Pré-carregamento Ativado (Recarregar p/ aplicar)",
+                preloadDisabled: "Pré-carregamento Desativado",
+                wlEnabled: "Botão Direito Brilho Ativado",
+                wlDisabled: "Botão Direito Brilho Desativado",
+                panEnabled: "Botão Esquerdo Pan Ativado",
+                panDisabled: "Botão Esquerdo Pan Desativado",
+                exporting: "Exportando imagens...",
+                exportBtnWait: "⏳ Exportando...",
+                exportBtnPick: "⏳ Selecionar Pasta...",
+                errorCornerstone: "Cornerstone não encontrado",
+                errorStudy: "Dados do estudo não encontrados",
+                errorCache: "Cache não encontrado",
+                errorPage: "Use na página Navigating Radiology",
+                errorNoData: "Não foi possível obter dados da imagem",
+                errorExport: "Falha na exportação",
+                errorGeneric: "Erro ao exportar: ",
+                cancel: "Cancelado",
+                success: "{n} imagens exportadas ({s} pastas)"
+            }
+        },
+        id: {
+            enablePreload: "Aktifkan Preload",
+            masterToggle: "Kontrol Keduanya (Klik Ki/Ka)",
+            wlToggle: "Klik Kanan Kecerahan",
+            panToggle: "Klik Kiri Geser",
+            exportBtn: "📥 Ekspor Gambar",
+            msgs: {
+                preloadEnabled: "Preload Diaktifkan (Refresh untuk menerapkan)",
+                preloadDisabled: "Preload Dinonaktifkan",
+                wlEnabled: "Klik Kanan Kecerahan Aktif",
+                wlDisabled: "Klik Kanan Kecerahan Nonaktif",
+                panEnabled: "Klik Kiri Geser Aktif",
+                panDisabled: "Klik Kiri Geser Nonaktif",
+                exporting: "Mengekspor gambar...",
+                exportBtnWait: "⏳ Mengekspor...",
+                exportBtnPick: "⏳ Pilih Folder...",
+                errorCornerstone: "Cornerstone tidak ditemukan",
+                errorStudy: "Data Study tidak ditemukan",
+                errorCache: "Cache tidak ditemukan",
+                errorPage: "Gunakan pada halaman Navigating Radiology",
+                errorNoData: "Tidak dapat mengambil data gambar",
+                errorExport: "Ekspor gagal",
+                errorGeneric: "Terjadi kesalahan: ",
+                cancel: "Dibatalkan",
+                success: "{n} gambar diekspor ({s} folder)"
+            }
+        },
+        hi: {
+            enablePreload: "प्री-लोड सक्षम करें",
+            masterToggle: "दोनों क्लिक नियंत्रित करें",
+            wlToggle: "दायां क्लिक ब्राइटनेस",
+            panToggle: "बायां क्लिक पैन",
+            exportBtn: "📥 छवियां निर्यात करें",
+            msgs: {
+                preloadEnabled: "प्री-लोड सक्षम (लागू करने के लिए रीफ्रेश करें)",
+                preloadDisabled: "प्री-लोड अक्षम",
+                wlEnabled: "दायां क्लिक ब्राइटनेस चालू",
+                wlDisabled: "दायां क्लिक ब्राइटनेस बंद",
+                panEnabled: "बायां क्लिक पैन चालू",
+                panDisabled: "बायां क्लिक पैन बंद",
+                exporting: "छवियां निर्यात हो रही हैं...",
+                exportBtnWait: "⏳ निर्यात हो रहा है...",
+                exportBtnPick: "⏳ फ़ोल्डर चुनें...",
+                errorCornerstone: "Cornerstone नहीं मिला",
+                errorStudy: "Study डेटा नहीं मिला",
+                errorCache: "कैश नहीं मिला",
+                errorPage: "कृपया Navigating Radiology पेज पर उपयोग करें",
+                errorNoData: "छवि डेटा प्राप्त नहीं किया जा सका",
+                errorExport: "निर्यात विफल",
+                errorGeneric: "निर्यात के दौरान त्रुटि: ",
+                cancel: "रद्द किया गया",
+                success: "{n} छवियां निर्यात की गईं ({s} फ़ोल्डर)"
+            }
+        },
+        ms: {
+            enablePreload: "Dayakan Pra-muat",
+            masterToggle: "Kawal Kedua-duanya (Klik Ki/Ka)",
+            wlToggle: "Klik Kanan Kecerahan",
+            panToggle: "Klik Kiri Pan",
+            exportBtn: "📥 Eksport Imej",
+            msgs: {
+                preloadEnabled: "Pra-muat Didayakan (Muat semula untuk memohon)",
+                preloadDisabled: "Pra-muat Dilumpuhkan",
+                wlEnabled: "Klik Kanan Kecerahan Hidup",
+                wlDisabled: "Klik Kanan Kecerahan Mati",
+                panEnabled: "Klik Kiri Pan Hidup",
+                panDisabled: "Klik Kiri Pan Mati",
+                exporting: "Mengeksport imej...",
+                exportBtnWait: "⏳ Mengeksport...",
+                exportBtnPick: "⏳ Pilih Folder...",
+                errorCornerstone: "Cornerstone tidak ditemui",
+                errorStudy: "Data Study tidak ditemui",
+                errorCache: "Cache tidak ditemui",
+                errorPage: "Sila gunakan pada halaman Navigating Radiology",
+                errorNoData: "Tidak dapat mengambil data imej",
+                errorExport: "Eksport gagal",
+                errorGeneric: "Ralat semasa eksport: ",
+                cancel: "Dibatalkan",
+                success: "{n} imej dieksport ({s} folder)"
+            }
+        }
+    };
+
+    let currentLang = 'zh';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        langSelect.value = lang;
+        chrome.storage.local.set({ language: lang });
+
+        // Update UI
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (TRANSLATIONS[lang][key]) {
+                el.innerText = TRANSLATIONS[lang][key];
+            }
+        });
+    }
+
+    function getMsg(key, params = {}) {
+        let msg = TRANSLATIONS[currentLang].msgs[key] || TRANSLATIONS['zh'].msgs[key];
+        Object.keys(params).forEach(k => {
+            msg = msg.replace(`{${k}}`, params[k]);
+        });
+        return msg;
+    }
+
+    // Load language preference
+    let { language } = await chrome.storage.local.get('language');
+
+    if (!language) {
+        // No saved preference, detect system language
+        const sysLang = navigator.language.toLowerCase(); // e.g., "en-us", "zh-tw"
+
+        if (sysLang.startsWith('zh')) {
+            if (sysLang.includes('cn') || sysLang.includes('hans')) {
+                language = 'zh-CN';
+            } else {
+                language = 'zh'; // Traditional for TW, HK, or generic 'zh'
+            }
+        } else if (sysLang.startsWith('en')) {
+            language = 'en';
+        } else if (sysLang.startsWith('hi')) {
+            language = 'hi';
+        } else if (sysLang.startsWith('es')) {
+            language = 'es';
+        } else if (sysLang.startsWith('pt')) {
+            language = 'pt';
+        } else if (sysLang.startsWith('id')) {
+            language = 'id';
+        } else if (sysLang.startsWith('de')) {
+            language = 'de';
+        } else if (sysLang.startsWith('ja')) {
+            language = 'ja';
+        } else if (sysLang.startsWith('ko')) {
+            language = 'ko';
+        } else if (sysLang.startsWith('ms')) {
+            language = 'ms';
+        } else {
+            language = 'en'; // Default fallback
+        }
+    }
+
+    setLanguage(language);
+
+    langSelect.addEventListener('change', (e) => {
+        setLanguage(e.target.value);
+    });
 
     // Load saved state
     const { enabled = true } = await chrome.storage.local.get('enabled');
@@ -31,7 +398,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        showStatus(enabled ? '預載已啟用 (重新整理頁面生效)' : '預載已停用', 'info');
+        showStatus(enabled ? getMsg('preloadEnabled') : getMsg('preloadDisabled'), 'info');
     });
 
     // Right-click Window/Level toggle
@@ -58,7 +425,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        showStatus(wlEnabled ? '右鍵調整亮度已啟用' : '右鍵調整亮度已停用', 'info');
+        showStatus(wlEnabled ? getMsg('wlEnabled') : getMsg('wlDisabled'), 'info');
     });
 
     // Left-click Pan toggle
@@ -85,40 +452,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        showStatus(panEnabled ? '左鍵平移已啟用' : '左鍵平移已停用', 'info');
+        showStatus(panEnabled ? getMsg('panEnabled') : getMsg('panDisabled'), 'info');
     });
 
-    // Middle-click Zoom toggle
-    const zoomToggle = document.getElementById('zoomToggle');
-    const { zoomEnabled = false } = await chrome.storage.local.get('zoomEnabled');
-    zoomToggle.checked = zoomEnabled;
 
-    zoomToggle.addEventListener('change', async () => {
-        const zoomEnabled = zoomToggle.checked;
-        await chrome.storage.local.set({ zoomEnabled });
-
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (tab && tab.url.includes('navigatingradiology.com')) {
-            await chrome.scripting.executeScript({
-                target: { tabId: tab.id },
-                world: 'MAIN',
-                func: (isEnabled) => {
-                    localStorage.setItem('nr_middleclick_zoom_enabled', isEnabled);
-                    window.dispatchEvent(new CustomEvent('nr-middleclick-zoom-toggle', {
-                        detail: { enabled: isEnabled }
-                    }));
-                },
-                args: [zoomEnabled]
-            });
-        }
-
-        showStatus(zoomEnabled ? '滾輪縮放已啟用' : '滾輪縮放已停用', 'info');
-    });
 
     // Export images
     exportBtn.addEventListener('click', async () => {
         exportBtn.disabled = true;
-        exportBtn.textContent = '⏳ 選擇資料夾...';
+        exportBtn.textContent = getMsg('exportBtnPick');
 
         try {
             // Ask user to pick a folder
@@ -126,13 +468,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 mode: 'readwrite'
             });
 
-            showStatus('正在匯出影像...', 'info');
-            exportBtn.textContent = '⏳ 匯出中...';
+            showStatus(getMsg('exporting'), 'info');
+            exportBtn.textContent = getMsg('exportBtnWait');
 
             const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
             if (!tab || !tab.url.includes('navigatingradiology.com')) {
-                showStatus('請在 Navigating Radiology 頁面使用此功能', 'error');
+                showStatus(getMsg('errorPage'), 'error');
                 return;
             }
 
@@ -144,14 +486,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             if (!results || !results[0] || !results[0].result) {
-                showStatus('無法取得影像資料', 'error');
+                showStatus(getMsg('errorNoData'), 'error');
                 return;
             }
 
             const { success, series, message } = results[0].result;
 
             if (!success) {
-                showStatus(message || '匯出失敗', 'error');
+                showStatus(message || getMsg('errorExport'), 'error');
                 return;
             }
 
@@ -183,14 +525,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                         await writable.close();
 
                         savedCount++;
-                        showStatus(`匯出中... ${savedCount}/${totalImages}`, 'info');
+                        showStatus(`${getMsg('exporting')} ${savedCount}/${totalImages}`, 'info');
                     } catch (e) {
                         console.warn('Failed to save image:', e);
                     }
                 }
             }
 
-            showStatus(`已匯出 ${savedCount} 張影像 (${series.length} 個資料夾)`, 'success');
+            showStatus(getMsg('success', { n: savedCount, s: series.length }), 'success');
         } catch (e) {
             if (e.name === 'AbortError') {
                 showStatus('已取消選擇', 'info');
@@ -200,7 +542,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } finally {
             exportBtn.disabled = false;
-            exportBtn.textContent = '📥 匯出已載入影像';
+            exportBtn.textContent = TRANSLATIONS[currentLang].exportBtn;
         }
     });
 
@@ -214,7 +556,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function updateMasterState() {
         // Master is ON if ALL sub-features are ON
-        const allOn = wlToggle.checked && panToggle.checked && zoomToggle.checked;
+        const allOn = wlToggle.checked && panToggle.checked;
         masterToggle.checked = allOn;
     }
 
@@ -224,7 +566,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Update all sub-toggles to match master
         if (wlToggle.checked !== isChecked) wlToggle.click();
         if (panToggle.checked !== isChecked) panToggle.click();
-        if (zoomToggle.checked !== isChecked) zoomToggle.click();
     });
 
     // Hook into sub-toggles to update master state
@@ -232,7 +573,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Since 'change' events can have multiple listeners, we add new ones.
     wlToggle.addEventListener('change', updateMasterState);
     panToggle.addEventListener('change', updateMasterState);
-    zoomToggle.addEventListener('change', updateMasterState);
 
     // Initial check
     updateMasterState();
@@ -242,15 +582,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 function getImageDataForExport() {
     try {
         if (typeof cornerstone === 'undefined') {
-            return { success: false, message: '找不到 Cornerstone' };
+            return { success: false, message: 'Cornerstone not found' };
         }
         if (typeof window.studydata === 'undefined' || !window.studydata.series) {
-            return { success: false, message: '找不到 Study 資料' };
+            return { success: false, message: 'Study data not found' };
         }
 
         const imageCache = cornerstone.imageCache;
         if (!imageCache) {
-            return { success: false, message: '找不到 Cornerstone 快取' };
+            return { success: false, message: 'Cache not found' };
         }
 
         const canvas = document.createElement('canvas');
@@ -322,7 +662,7 @@ function getImageDataForExport() {
         }
 
         if (seriesResults.length === 0) {
-            return { success: false, message: '快取中沒有影像' };
+            return { success: false, message: 'No images in cache' };
         }
 
         return {
