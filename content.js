@@ -309,17 +309,24 @@
         const viewer = e.target.closest('#dicomImage, .cornerstone-canvas, canvas, .viewport-element');
         if (!viewer) return;
 
-        // Prevent default scrolling behavior
+        // Try multiple selectors for the zoom tool
+        const zoomBtn = document.getElementById('zoom-tool') ||
+            document.getElementById('zoom') ||
+            document.querySelector('[title="Zoom"]');
+
+        if (!zoomBtn) {
+            // If we can't find the tool, let native behavior take over (fix for "enabled breaks it")
+            return;
+        }
+
+        // Prevent default scrolling behavior only if we are taking control
         e.preventDefault();
         e.stopPropagation();
 
         saveOriginalTool();
         isZoomDragging = true;
 
-        const zoomBtn = document.getElementById('zoom-tool');
-        if (zoomBtn) {
-            zoomBtn.click();
-        }
+        zoomBtn.click();
 
         // Simulate left mouse down
         setTimeout(() => {

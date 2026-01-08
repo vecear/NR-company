@@ -208,6 +208,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         statusEl.textContent = message;
         statusEl.className = 'status ' + type;
     }
+
+    // Master Toggle Logic
+    const masterToggle = document.getElementById('masterToggle');
+
+    function updateMasterState() {
+        // Master is ON if ALL sub-features are ON
+        const allOn = wlToggle.checked && panToggle.checked && zoomToggle.checked;
+        masterToggle.checked = allOn;
+    }
+
+    masterToggle.addEventListener('change', () => {
+        const isChecked = masterToggle.checked;
+
+        // Update all sub-toggles to match master
+        if (wlToggle.checked !== isChecked) wlToggle.click();
+        if (panToggle.checked !== isChecked) panToggle.click();
+        if (zoomToggle.checked !== isChecked) zoomToggle.click();
+    });
+
+    // Hook into sub-toggles to update master state
+    // We wrap original listeners or just add new ones? 
+    // Since 'change' events can have multiple listeners, we add new ones.
+    wlToggle.addEventListener('change', updateMasterState);
+    panToggle.addEventListener('change', updateMasterState);
+    zoomToggle.addEventListener('change', updateMasterState);
+
+    // Initial check
+    updateMasterState();
 });
 
 // This function runs in the page context - returns image data organized by series

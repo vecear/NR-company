@@ -1,5 +1,9 @@
 {
+  "scripts": {
+    "pack": "node scripts/pack.js"
+  },
   "devDependencies": {
+    "crx": "^5.0.1",
     "jimp": "^0.22.12"
   }
 }

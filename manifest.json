@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "NR Preloader",
-    "version": "1.2.0",
+    "version": "1.2.3",
     "description": "Preloads all CT series/views while viewing on Navigating Radiology",
     "permissions": [
         "activeTab",
